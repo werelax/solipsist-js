@@ -59,12 +59,11 @@ var MyModel = Backbone.Model.extend({
 });
 
 var MyFactory = Solipsist.Factory(function(f) {
-  var factory = f({
+  return f({
     prop_one: f.int_between(10, 100),
     prop_two: f.int_sequence(50)
-  });
-  return function(defaults) {
-    return new MyModel(factory());
+  });}, function (data) {
+    return new MyModel(data);
   };
 });
 

@@ -74,8 +74,13 @@
 
     extend(FactoryConstructor, PropertyFactory);
 
-    return function(description_function) {
-      return description_function(FactoryConstructor);
+    return function(description_function, constructor) {
+      var generated = description_function(FactoryConstructor);
+      if (constructor && typeof(constructor) == 'function') {
+        return constructor(generated);
+      } else {
+        return generated;
+      }
     }
 
   })();
