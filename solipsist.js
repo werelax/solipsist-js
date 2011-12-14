@@ -74,7 +74,7 @@
 
     extend(FactoryConstructor, PropertyFactory);
 
-    return function(name, description_function) {
+    return function(description_function) {
       return description_function(FactoryConstructor);
     }
 
