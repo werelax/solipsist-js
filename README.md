@@ -22,7 +22,7 @@ var MyFactory = Solipsist.Factory(function(f) {
     prop_two:    f.int_between(0, 100),
     prop_three:  f.int_sequence(),
     prop_four:   f.int_sequence(1000),
-    prop_five:   "Just a plain, static string"
+    prop_five:   "Just a plain, static string",
     prop_six:    function() { return new Date; }
   });
 });

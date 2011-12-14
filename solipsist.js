@@ -14,7 +14,7 @@
     return receiver;
   }
 
-  // Fix values of variable loops
+  // Fix values of loop variables
   function fix(value) {
     return value;
   }
