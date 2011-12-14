@@ -30,13 +30,13 @@ var MyFactory = Solipsist.Factory(function(f) {
 // Then, use it to generate data objects
 
 var my_obj = MyFactory();
-console.log(my_obj.one);        // 13
+console.log(my_obj.prop_one);   // 13
 console.log(my_obj.prop_three); // 0
 console.log(my_obj.prop_four);  // 1000
 console.log(my_obj.prop_five);  // "Just a plain, static string"
 
 var other_obj = MyFactory({prop_five: "Another String"});
-console.log(other_obj.one);        // 17
+console.log(other_obj.prop_one);   // 17
 console.log(other_obj.prop_three); // 1
 console.log(other_obj.prop_four);  // 1001
 console.log(other_obj.prop_five);  // "Another String"
@@ -49,23 +49,27 @@ You can use the object constructed by the factory to populate more complex model
 
 // Using backbone.js
 
-var MyModel = Backbone.Model.Extend({
+var MyModel = Backbone.Model.extend({
   method_one: function() {
-    this.get('prop_one');
+    return this.get('prop_one');
   },
   method_two: function() {
-    this.get('prop_two');
+    return this.get('prop_two');
   }
 });
 
 var MyFactory = Solipsist.Factory(function(f) {
-  return new MyModel(f({
+  var factory = f({
     prop_one: f.int_between(10, 100),
     prop_two: f.int_sequence(50)
-  }));
+  });
+  return function(defaults) {
+    return new MyModel(factory());
+  };
 });
 
 var instance = MyFactory();
-console.log(instance.method_one()); // 34
+console.log(instance.method_one());    // 34
+console.log(instance.get('prop_two')); // 50
 
 ```
