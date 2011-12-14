@@ -68,7 +68,7 @@
 
       return function (override_values) {
         var generated = generate_object();
-        return extend(generated, override_values, {override: true});
+        return extend(generated, override_values, {overwrite: true});
       }
     };
 
