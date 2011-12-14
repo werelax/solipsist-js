@@ -2,11 +2,11 @@
 
 Solipsist is (will be) a library that allows you to develop JavaScript applications without worrying about the backend by providing a simple way to define object factories and mocking ajax requests.
 
-The idea is to provide an isolated environment that mimics the behaviour of the server so you can focus completely on the frontend until it's ready to talk to the real workd, avoiding the painful context-switching between client-server code.
+The idea is to provide an isolated environment that mimics the behaviour of the server so you can focus completely on the frontend until it's ready to talk to the real world, avoiding the painful context-switching between client-server code.
 
 ### Status of the Library
 
-Only a proof of concept.
+Just a proof of concept.
 
 ## Factories
 
