@@ -75,11 +75,11 @@
     extend(FactoryConstructor, PropertyFactory);
 
     return function(description_function, constructor) {
-      var generated = description_function(FactoryConstructor);
+      var generate_instance = description_function(FactoryConstructor);
       if (constructor && typeof(constructor) == 'function') {
-        return constructor(generated);
+        return function() { return constructor(generate_instance()); };
       } else {
-        return generated;
+        return generate_instance;
       }
     }
 

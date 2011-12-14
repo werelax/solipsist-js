@@ -62,9 +62,9 @@ var MyFactory = Solipsist.Factory(function(f) {
   return f({
     prop_one: f.int_between(10, 100),
     prop_two: f.int_sequence(50)
-  });}, function (data) {
-    return new MyModel(data);
-  };
+  });
+}, function (data) {
+  return new MyModel(data);
 });
 
 var instance = MyFactory();
