@@ -38,26 +38,53 @@
 
   // Factories
 
-  exports['Factory'] = (function() {
+  exports['Factory'] = (function () {
 
     var PropertyFactory = {
 
       // Numeric
-      int_between: function(min, max) {
+      int_between: function (min, max) {
         var dif = max - min;
         return function() {
           return Math.floor(Math.random() * dif) + min;
         };
       },
 
-      int_sequence: function(start) {
-        start  || (start = 0);
+      int_sequence: function (start) {
+        start || (start = 0);
         return function() {
           return start++;
         };
-      }
+      },
 
       // Strings
+
+      string_sequence: function (blueprint, placeholder, start) {
+        start || (start = 0);
+        return function() {
+          return blueprint.replace(placeholder, start++);
+        };
+      },
+
+      string_random: function (length) {
+        return function () {
+          with (Math) { return floor(random() * pow(36, length)).toString(36); }
+        };
+      },
+
+      string_random_paragraph: function(n_words, word_length) {
+        word_length || (word_length = 7);
+        return function () {
+          var paragraph = new Array(n_words);
+          with (Math) {
+            for (var i=0; i<n_words; i++) {
+              var len = floor(random() * word_length);
+              paragraph[i]= floor(random()*pow(36, len)).toString(36);
+            }
+          }
+          return paragraph.join(' ');
+        }
+      },
 
       // Collections
 
