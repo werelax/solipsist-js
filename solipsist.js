@@ -19,6 +19,23 @@
     return value;
   }
 
+  function buildHash(names, values) {
+    var hash = {};
+    for (var i=0,_len=names.length; i<_len; i++) {
+      hash[names[i]] = values[i];
+    }
+    return hash;
+  }
+
+  function extractKeys(object, keys) {
+    var result = {}, key;
+    for (var i=0,_len=keys.length; i<_len; i++) {
+      key = keys[i];
+      result[key] = object[key];
+    }
+    return result;
+  }
+
   // Factories
 
   exports['Factory'] = (function() {
@@ -83,6 +100,104 @@
       }
     }
 
+  })();
+
+  // AJAX mocks
+
+  exports['Request'] = (function() {
+
+    // Route Matching (borrowed from Backbone.js)
+
+    var namedParam   = /:([\w\d]+)/g;
+    var splatParam   = /\*([\w\d]+)/g;
+    var escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g;
+
+    var routeToRegExp = function(route) {
+      route = route.replace(escapeRegExp, "\\$&")
+                   .replace(namedParam, "([^\/]*)")
+                   .replace(splatParam, "(.*?)");
+      return new RegExp('^' + route + '$');
+    };
+
+    var extractParameters = function(route_regexp, fragment) {
+      return route_regexp.exec(fragment).slice(1);
+    };
+
+    // Define route handlers
+
+    var defined_routes = [];
+
+    var registerRoute = function(route, verb, handler) {
+      route_regexp = routeToRegExp(route);
+      defined_routes.push({
+        route: route_regexp,
+        verb: verb.toLowerCase(),
+        param_names: route_regexp.exec(route).slice(1).map(function(p){return p.slice(1);}),
+        handler: handler
+      });
+    };
+
+    // Hijack $.ajax
+
+    var real_ajax = $.ajax;
+
+    $.ajax = function(options) {
+      var default_options = {
+        type: 'get',
+      };
+      var relevant_keys = ['complete', 'success', 'error', 'data', 'type', 'url'];
+      var relevant_options = extend(extractKeys(options, relevant_keys), default_options);
+      var url = relevant_options['url'];
+
+      for (var i=0,_len=defined_routes.length; i<_len; i++) {
+        var route_obj = defined_routes[i];
+        if (relevant_options.type.toLowerCase() == route_obj.verb
+            && url.match(route_obj.route)) {
+          var params_array = extractParameters(route_obj.route, url);
+          relevant_options.params = buildHash(route_obj.param_names, params_array);
+          return route_obj.handler(relevant_options);
+        }
+      }
+
+      // Route not defined, pass through to $.ajax
+      real_ajax.apply($, arguments);
+    };
+
+    // Interface
+
+    var Request =  function(route, options, handler) {
+      var defaults = {
+        type: 'get',
+        delay: 0,
+      };
+      if (typeof(options) == 'function') {
+        handler = options;
+        options = {};
+      }
+      options || (options = {});
+      options = extend(options, defaults);
+
+      registerRoute(route, options.type, function(req) {
+        setTimeout(options.delay, handler(req));
+      });
+    };
+
+    var RequestHelpers = {};
+    var verbs = ['get', 'post', 'put', 'delete'];
+    for (var i=0,_len=verbs.length; i<_len; i++) {
+      var verb = fix(verbs[i]);
+      RequestHelpers[verb] = (function(verb){ return function(route, options, handler) {
+        if (typeof(options) == 'function') {
+          handler = options;
+          options = {};
+        } else {
+          options || (options = {});
+        }
+        return Request(route, options, handler);
+      }})(verb);
+    }
+
+    return extend(Request, RequestHelpers);
   })();
 
 })(this.Solipsist || (this.Solipsist = {}))
