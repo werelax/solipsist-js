@@ -60,6 +60,7 @@
       // Strings
 
       string_sequence: function (blueprint, placeholder, start) {
+        placeholder || (placeholder = ':n');
         start || (start = 0);
         return function() {
           return blueprint.replace(placeholder, start++);
@@ -116,16 +117,20 @@
       }
     };
 
-    extend(FactoryConstructor, PropertyFactory);
-
-    return function(description_function, constructor) {
-      var generate_instance = description_function(FactoryConstructor);
+    var Factory = function(blueprint, constructor) {
+      if (blueprint['constructor']) {
+        constructor = blueprint['constructor'];
+        delete blueprint['constructor'];
+      }
+      var generate_instance = FactoryConstructor(blueprint)
       if (constructor && typeof(constructor) == 'function') {
         return function() { return constructor(generate_instance()); };
       } else {
         return generate_instance;
       }
-    }
+    };
+
+    return extend(Factory, PropertyFactory);
 
   })();
 
