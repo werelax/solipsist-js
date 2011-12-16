@@ -117,14 +117,14 @@
       }
     };
 
-    var Factory = function(blueprint, constructor) {
-      if (blueprint['constructor']) {
-        constructor = blueprint['constructor'];
-        delete blueprint['constructor'];
+    var Factory = function(blueprint, user_constructor) {
+      if (blueprint['_constructor']) {
+        user_constructor = blueprint['_constructor'];
+        delete blueprint['_constructor'];
       }
       var generate_instance = FactoryConstructor(blueprint)
-      if (constructor && typeof(constructor) == 'function') {
-        return function() { return constructor(generate_instance()); };
+      if (user_constructor && typeof(user_constructor) == 'function') {
+        return function(options) { return user_constructor(generate_instance(options)); };
       } else {
         return generate_instance;
       }
