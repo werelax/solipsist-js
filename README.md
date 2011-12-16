@@ -16,15 +16,15 @@ With `Solipsist.Factory` you can define 'blueprints' for your data objects and t
 
 // Define some factory with six silly properties
 
-var MyFactory = Solipsist.Factory(function(f) {
-  return f({
-    prop_one:    f.int_between(10, 20),
-    prop_two:    f.int_between(0, 100),
-    prop_three:  f.int_sequence(),
-    prop_four:   f.int_sequence(1000),
-    prop_five:   "Just a plain, static string",
-    prop_six:    function() { return new Date; }
-  });
+var Factory = Solipsist.Factory;
+
+var MyFactory = Factory({
+  prop_one:    Factory.int_between(10, 20),
+  prop_two:    Factory.int_between(0, 100),
+  prop_three:  Factory.int_sequence(),
+  prop_four:   Factory.int_sequence(1000),
+  prop_five:   "Just a plain, static string",
+  prop_six:    function() { return new Date; }
 });
 
 // Then, use it to generate data objects
@@ -58,13 +58,12 @@ var MyModel = Backbone.Model.extend({
   }
 });
 
-var MyFactory = Solipsist.Factory(function(f) {
-  return f({
-    prop_one: f.int_between(10, 100),
-    prop_two: f.int_sequence(50)
-  });
-}, function (data) {
-  return new MyModel(data);
+var Factory = Solipsist.Factory;
+
+var MyFactory = Factory({
+  prop_one: Factory.int_between(10, 100),
+  prop_two: Factory.int_sequence(50),
+  constructor: function(d) { return new MyModel(d); }
 });
 
 var instance = MyFactory();
