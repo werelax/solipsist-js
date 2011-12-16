@@ -36,6 +36,15 @@
     return result;
   }
 
+  function fill_with_fn(object, keys) {
+    for (var i=0,_len=keys.length; i<_len; i++) {
+      (function (key) {
+        if (!object[key]) { object[key] = function(){}; }
+      })(keys[i]);
+    }
+    return object;
+  }
+
   // Factories
 
   exports['Factory'] = (function () {
@@ -191,6 +200,7 @@
       };
       var relevant_keys = ['complete', 'success', 'error', 'data', 'type', 'url'];
       var relevant_options = extend(extractKeys(options, relevant_keys), default_options);
+      relevant_options = fill_with_fn(relevant_options, ['complete', 'success', 'error']);
       var url = relevant_options['url'];
 
       for (var i=0,_len=defined_routes.length; i<_len; i++) {
@@ -199,6 +209,7 @@
             && url.match(route_obj.route)) {
           var params_array = extractParameters(route_obj.route, url);
           relevant_options.params = buildHash(route_obj.param_names, params_array);
+          relevant_options.params = extend(relevant_options.params, relevant_options.data);
           return route_obj.handler(relevant_options);
         }
       }
@@ -230,15 +241,18 @@
     var verbs = ['get', 'post', 'put', 'delete'];
     for (var i=0,_len=verbs.length; i<_len; i++) {
       var verb = fix(verbs[i]);
-      RequestHelpers[verb] = (function(verb){ return function(route, options, handler) {
-        if (typeof(options) == 'function') {
-          handler = options;
-          options = {};
-        } else {
-          options || (options = {});
+      (function (verb) {
+        RequestHelpers[verb] = function(route, options, handler) {
+          if (typeof(options) == 'function') {
+            handler = options;
+            options = {};
+          } else {
+            options || (options = {});
+          }
+          options['type'] = verb;
+          return Request(route, options, handler);
         }
-        return Request(route, options, handler);
-      }})(verb);
+      })(verb);
     }
 
     return extend(Request, RequestHelpers);
