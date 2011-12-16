@@ -95,6 +95,16 @@
 
     };
 
+    var FactoryHelpers = {
+      collection_of: function(number, factory) {
+        var result = new Array(number);
+        for (var i=0; i<number; i++) { 
+          result[i] = factory(); 
+        }
+        return result;
+      },
+    };
+
     var FactoryConstructor = function(blueprint) {
 
       var generate_object = function() {
@@ -130,7 +140,9 @@
       }
     };
 
-    return extend(Factory, PropertyFactory);
+    Factory = extend(Factory, PropertyFactory);
+    Factory = extend(Factory, FactoryHelpers);
+    return Factory;
 
   })();
 
