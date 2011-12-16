@@ -185,7 +185,7 @@ $.ajax({
 
 ```
 
-When you launch a POST request, all the parameters are available inside `req.params`:
+When you launch a POST request, all the data fields are available inside the `req.params` object:
 
 ```javascript
 
@@ -199,3 +199,9 @@ Request.post('/say', function(req) {
 $.post('/say'. {message: 'Hello, fake server!'});
 
 ```
+
+The `req` object also has a `req.complete` method to trigger the `complete` handler.
+
+## Intended Usage
+
+Despite its simplicity, you can go quite far combining factories and request stubs. The implementation of the ajax proxy is not very exhaustive and its behaviour doens't match exactly the real thing, so don't use it for testing purposes if you have complex ajax patterns in your app. For now, the focus is on making the _development envirnoment_ simple and server-free.
