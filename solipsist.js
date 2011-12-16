@@ -106,10 +106,10 @@
     };
 
     var FactoryHelpers = {
-      collection_of: function(number, factory) {
+      array_of: function(number) {
         var result = new Array(number);
-        for (var i=0; i<number; i++) { 
-          result[i] = factory(); 
+        for (var i=0; i<number; i++) {
+          result[i] = this();
         }
         return result;
       },
@@ -143,6 +143,7 @@
         delete blueprint['_constructor'];
       }
       var generate_instance = FactoryConstructor(blueprint)
+      generate_instance = extend(generate_instance, FactoryHelpers);
       if (user_constructor && typeof(user_constructor) == 'function') {
         return function(options) { return user_constructor(generate_instance(options)); };
       } else {
@@ -151,7 +152,6 @@
     };
 
     Factory = extend(Factory, PropertyFactory);
-    Factory = extend(Factory, FactoryHelpers);
     return Factory;
 
   })();

@@ -153,7 +153,7 @@ var BookFactory = Factory({
 var AuthorFactory = Factory({
   id: Factory.int_sequence(),
   name: Factory.string_random_paragraph(2, 10),
-  books: function() { return Factory.collection_of(4, BookFactory); }
+  books: function() { return BookFactory.array_of(4); }
 });
 
 // AJAX stub
