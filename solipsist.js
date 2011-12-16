@@ -38,9 +38,10 @@
 
   function fill_with_fn(object, keys) {
     for (var i=0,_len=keys.length; i<_len; i++) {
-      (function (key) {
-        if (!object[key]) { object[key] = function(){}; }
-      })(keys[i]);
+      var key = fix(keys[i]);
+      if (!object[key]) {
+        object[key] = function(){};
+      }
     }
     return object;
   }
@@ -240,7 +241,6 @@
     var RequestHelpers = {};
     var verbs = ['get', 'post', 'put', 'delete'];
     for (var i=0,_len=verbs.length; i<_len; i++) {
-      var verb = fix(verbs[i]);
       (function (verb) {
         RequestHelpers[verb] = function(route, options, handler) {
           if (typeof(options) == 'function') {
@@ -252,7 +252,7 @@
           options['type'] = verb;
           return Request(route, options, handler);
         }
-      })(verb);
+      })(verbs[i]);
     }
 
     return extend(Request, RequestHelpers);
