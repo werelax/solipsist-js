@@ -93,7 +93,7 @@ var ItemFactory = Factory({
 var Request = Solipsist.Request;
 
 Request.get('/resource/index', function(req) {
-  var response = Factory.collection_of(10, ItemFactory);
+  var response = ItemFactory.array_of(10);
   req.success(response);
 });
 
