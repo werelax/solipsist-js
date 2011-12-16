@@ -196,7 +196,7 @@ Request.post('/say', function(req) {
   req.success();
 });
 
-$.post('/say'. {message: 'Hello, fake server!'});
+$.post('/say', {message: 'Hello, fake server!'});
 
 ```
 
