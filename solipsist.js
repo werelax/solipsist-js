@@ -97,6 +97,18 @@
         }
       },
 
+      string_random_combinations: function() {
+        var parts = [].slice.call(arguments);
+        return function () {
+          var result = [], part;
+          for (var i=0, _len=parts.length; i<_len; i++) {
+            part = parts[i];
+            with (Math) { result.push(part[floor(random()*part.length)]); }
+          }
+          return result.join(' ');
+        }
+      }
+
       // Collections
 
       // Sequences
