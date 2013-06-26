@@ -228,7 +228,7 @@
       }
 
       // Route not defined, pass through to $.ajax
-      real_ajax.apply($, arguments);
+      return real_ajax.apply($, arguments);
     };
 
     // Interface
